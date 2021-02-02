@@ -5,7 +5,7 @@
 # 1.1          2021          Init Version
 
 name: ci-cd-pipeline-to-aws-elb
-env:
+env :
   EB_S3_BUCKET_NAME     : "serjio-flask-app-packages"
   EB_APP_NAME           : "GitHub-Actions-to-AWS"
   EB_ENVIRONMENT_NAME   : "Python-env"
