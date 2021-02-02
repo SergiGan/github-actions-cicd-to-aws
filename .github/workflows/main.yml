@@ -2,7 +2,7 @@
 # GitHubAWDeploy html_App to AWS EB
 #
 # Version      Date        Info
-# 1.1          2021          Init Version
+# 1.1          2021        Init Version
 
 name: ci-cd-pipeline-to-aws-elb
 env :
