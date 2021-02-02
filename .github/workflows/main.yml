@@ -19,17 +19,17 @@ on:
 
 jobs:
   ci_part:
-    runs-on: Amazon_Linux_2/3.1.5
+    runs-on: amazon_linux_2/3.1.5
 
     steps:
     - name: Git clone repo to test
-      uses: actions/checkout@v1.0
+      uses: actions/checkout@v1.1
        
     - name: Create zip deployment package
       run : zip -r ${{ env.DEPLOY_PACKAGE_NAME }} ./ -x *.git*
       
     - name: Configuring aws credentials for deployment 
-      uses: aws-actions/configure-aws-credentials@v1.0
+      uses: aws-actions/configure-aws-credentials@v1.1
       with:
         aws-access-key-id    	:  ${{ secrets.AWS_ACCESS_KEY }}
         aws-secret-access-key	:  ${{ secrets.AWS_SECRET_KEY }}
@@ -40,7 +40,6 @@ jobs:
     
     - name: CI finished
       run : echo "CI Pipeline part Finished successfully!"
-
 
   cd_part:
     runs-on: amazon-linux-2/3.1.5
