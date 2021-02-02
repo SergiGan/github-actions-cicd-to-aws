@@ -19,7 +19,7 @@ on:
 
 jobs:
   ci_part:
-    runs-on: amazon_linux_2/3.1.5
+    runs-on: amazon-linux-2/3.1.5
 
     steps:
     - name: Git clone repo to test
@@ -47,7 +47,7 @@ jobs:
 
     steps:
     - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1.0
+      uses: aws-actions/configure-aws-credentials@v1.1
       with:
         aws-access-key-id     :  ${{ secrets._AWS_ACCESS_KEY }}
         aws-secret-access-key :  ${{ secrets.AWS_SECRET_KEY }}
