@@ -1,6 +1,6 @@
 #--------------------------------------------------------------
 # GitHubAWtoDeploy html_App to AWS EB
-# deploy runs on machine AWS - amazon-linux-2/3.1.5
+# Deploy runs on machine AWS - amazon-linux-2/3.1.5
 # Version      Date        Info
 # 1.0          2021        Init Version
 
