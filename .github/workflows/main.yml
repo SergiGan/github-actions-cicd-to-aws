@@ -14,8 +14,8 @@ env :
 
 on: 
   push:
-    branches: 
-      - master
+    branches: [master]
+      
 
 jobs:
   ci_part:
