@@ -11,7 +11,7 @@ env :
   EB_S3_BUCKET_NAME     : "serjio-flask-app-packages"
   EB_APP_NAME           : "GitHub-Actions-to-AWS"
   EB_ENVIRONMENT_NAME   : "Githubactionstoaws-env"
-  DEPLOY_PACKAGE_NAME   : "py_app_${{ (tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1) }}.zip"
+  DEPLOY_PACKAGE_NAME   : "py_app_${{ (cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1) }}.zip"
   AWS_REGION_NAME       : "us-west-2"
   
 # Controls when the action will run. 
