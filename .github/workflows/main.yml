@@ -1,0 +1,79 @@
+#--------------------------------------------------------------
+# This is a basic workflow with Actions
+# GitHubAWtoDeploy html_App to AWS EB
+# Deploy runs on machine AWS - amazon-linux-2/3.1.5
+# Version      Date        Info
+# 1.0          2021        Init Version
+
+name: CI-CD-pipeline-to-AWS-elb
+# Environment variables
+env :
+  EB_S3_BUCKET_NAME     : "serjio-flask-app-packages"
+  EB_APP_NAME           : "GitHub-Actions-to-AWS"
+  EB_ENVIRONMENT_NAME   : "Githubactionstoaws-env"
+  DEPLOY_PACKAGE_NAME   : "py_app_${{ github.sha }}.zip"
+  AWS_REGION_NAME       : "us-west-2"
+  
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  # workflow_dispatch:
+jobs:
+  ci_part:  
+   # The type of runner that the job will run on    
+    runs-on: ubuntu-16.04
+   # Steps for a sequence of tasks
+    steps:
+   # Checking out a repository, so this job can access it
+    - name: Git clone my repo to check
+      uses: actions/checkout@v1
+       
+    - name: Create zip deployment package
+      run : zip -r ${{ env.DEPLOY_PACKAGE_NAME }} ./ -x *.git*
+      
+    - name: Configuring aws credentials for deployment 
+      uses: aws-actions/configure-aws-credentials@master
+      with:
+        aws-access-key-id    	:  ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key	:  ${{ secrets.AWS_SECRET_KEY }}
+        aws-region          	:  ${{ env.AWS_REGION_NAME }}
+        
+    - name: Copy Deployment package to S3 bucket
+      run : aws s3 cp ${{ env.DEPLOY_PACKAGE_NAME }}  s3://${{ env.EB_S3_BUCKET_NAME }}/
+    
+    - name: CI finished
+      run : echo "CI Pipeline part Finished successfully!"
+
+  cd_part:
+    runs-on: ubuntu-16.04
+    needs  : [ci_part]
+
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id     :  ${{ secrets._AWS_ACCESS_KEY }}
+        aws-secret-access-key :  ${{ secrets.AWS_SECRET_KEY }}
+        aws-region            :  ${{ env.AWS_REGION_NAME }}
+    
+    - name: Create new ElBe App version
+      run : |
+        aws elasticbeanstalk create-application-version \
+        --application-name ${{ env.EB_APP_NAME }} \
+        --source-bundle S3Bucket="${{ env.EB_S3_BUCKET_NAME }}",S3Key="${{ env.DEPLOY_PACKAGE_NAME }}" \
+        --version-label "Ver-${{ github.sha }}" \
+        --description "CoimmitSHA-${{ github.sha }}"
+       
+    - name: Deploy new ElasticBeanstalk App Version
+      run : aws elasticbeanstalk update-environment --environment-name ${{ env.EB_ENVIRONMENT_NAME }} --version-label "ver-${{ github.sha }}"
+      
+    - name:  Using the runners shell, print next massage
+      run : | 
+        echo "Test, and deploy my project"
+        echo "CD Pipeline Finished successfully!"
